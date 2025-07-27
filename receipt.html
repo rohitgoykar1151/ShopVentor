@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Receipt</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .receipt {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: #27ae60;
+        }
+        
+        .item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-weight: bold;
+        }
+        
+        .total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
+        
+        .details {
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .details p {
+            margin: 5px 0;
+        }
+        
+        .btns {
+            margin-top: 30px;
+        }
+        
+        a {
+            display: inline-block;
+            margin: 5px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="receipt" id="receipt">
+        <h2>✅ Order Placed Successfully</h2>
+
+        <div class="details" id="orderDetails"></div>
+
+        <div id="itemsList"></div>
+        <div class="total" id="totalPrice"></div>
+
+        <div class="btns">
+            <a href="track.html">📦 Track My Order</a>
+            <a href="index.html">⬅ Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Fetch latest order info (includes address, status, mode)
+        const orderInfo = JSON.parse(localStorage.getItem("latestOrder"));
+        const orderDetailsDiv = document.getElementById("orderDetails");
+
+        if (orderInfo) {
+            orderDetailsDiv.innerHTML = `
+        <p><strong>Order ID:</strong> ${orderInfo.orderId}</p>
+        <p><strong>Address:</strong> ${orderInfo.address}</p>
+        <p><strong>Mode:</strong> ${orderInfo.mode}</p>
+        <p><strong>Status:</strong> ${orderInfo.status}</p>
+        <p><strong>Time:</strong> ${orderInfo.time}</p>
+      `;
+        }
+
+        // Fetch ordered items
+        const items = JSON.parse(localStorage.getItem('lastOrder')) || [];
+        const itemsList = document.getElementById('itemsList');
+        const totalPriceDiv = document.getElementById('totalPrice');
+
+        let total = 0;
+        items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+            itemDiv.innerHTML = `
+        <div class="item-name">${item.name}</div>
+        <div>Quantity: ${item.quantity}</div>
+        <div>Subtotal: ₹${subtotal}</div>
+      `;
+            itemsList.appendChild(itemDiv);
+        });
+
+        totalPriceDiv.textContent = `Total: ₹${total}`;
+    </script>
+</body>
+
+</html>

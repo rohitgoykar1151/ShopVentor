@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart - BazaarLink</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-count {
+            background: red;
+            border-radius: 50%;
+            padding: 2px 8px;
+            color: white;
+            margin-left: 5px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .cart-item {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .cart-item img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        
+        .cart-item h3 {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+        
+        .cart-item p {
+            margin: 5px 0;
+        }
+        
+        .cart-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 30px;
+        }
+        
+        .cart-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .place-order {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .clear-cart {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .back-home {
+            background-color: #2196f3;
+            color: white;
+        }
+        
+        .receipt {
+            max-width: 500px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .receipt h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .receipt p {
+            margin: 5px 0;
+        }
+        
+        .payment-method {
+            font-size: 16px;
+        }
+        
+        select {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div><strong>BazaarLink</strong></div>
+        <div>Cart Items: <span id="cart-count" class="cart-count">0</span></div>
+    </nav>
+
+    <h1>Your Cart</h1>
+
+    <div class="cart-container" id="cart-items"></div>
+
+    <div class="cart-actions">
+        <!-- Payment method -->
+        <div class="payment-method">
+            <label for="payment">Select Payment Method: </label>
+            <select id="payment">
+        <option value="Cash on Delivery">Cash on Delivery</option>
+        <option value="UPI">UPI</option>
+        <option value="Card">Card</option>
+      </select>
+        </div>
+
+        <button class="place-order" onclick="placeOrder()">Place Order</button>
+        <button class="clear-cart" onclick="clearCart()">Clear Cart</button>
+        <button class="back-home" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <div id="receipt" class="receipt" style="display: none;"></div>
+
+    <script>
+        let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+
+        function renderCart() {
+            const cartContainer = document.getElementById("cart-items");
+            const cartCount = document.getElementById("cart-count");
+            cartContainer.innerHTML = "";
+            cartCount.textContent = cartItems.length;
+
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = "<p style='text-align:center; width:100%'>Your cart is empty.</p>";
+                return;
+            }
+
+            cartItems.forEach((item) => {
+                const card = document.createElement("div");
+                card.className = "cart-item";
+                card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p>Quantity: ${item.quantity}</p>
+          <p>Price: ₹${item.price}</p>
+          <p><strong>Total: ₹${item.price * item.quantity}</strong></p>
+        `;
+                cartContainer.appendChild(card);
+            });
+        }
+
+        function placeOrder() {
+            if (cartItems.length === 0) return alert("Your cart is empty!");
+
+            const selectedPayment = document.getElementById("payment").value;
+
+            const receiptBox = document.getElementById("receipt");
+            let total = 0;
+            let receiptHTML = "<h2>Order Receipt</h2>";
+
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                receiptHTML += `<p>${item.name} x ${item.quantity} = ₹${itemTotal}</p>`;
+            });
+
+            receiptHTML += `<hr><p><strong>Total Paid: ₹${total}</strong></p>`;
+            receiptHTML += `<p>Payment Method: <strong>${selectedPayment}</strong></p>`;
+            receiptHTML += `<p>Thank you for ordering from BazaarLink! 🎉</p>`;
+
+            receiptBox.innerHTML = receiptHTML;
+            receiptBox.style.display = "block";
+
+            localStorage.removeItem("cart");
+            cartItems = [];
+            renderCart();
+            document.getElementById("cart-count").textContent = "0";
+        }
+
+        function clearCart() {
+            localStorage.removeItem("cart");
+            cartItems = [];
+            renderCart();
+            document.getElementById("cart-count").textContent = "0";
+        }
+
+        renderCart();
+    </script>
+</body>
+
+</html>

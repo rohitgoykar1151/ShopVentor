@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FastGas Delivery</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        .navbar {
+            background: #d35400;
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar a {
+            color: white;
+            margin: 0 12px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+        }
+        
+        .product-container {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .product-card {
+            background: #fdf6e3;
+            padding: 16px;
+            border-radius: 12px;
+            width: 250px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .product-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+        
+        .add-btn {
+            margin-top: 10px;
+            background-color: #e67e22;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .add-btn:hover {
+            background-color: #ca6f1e;
+        }
+        
+        .qty-input {
+            width: 50px;
+            margin-top: 8px;
+        }
+        
+        .supplier-info {
+            text-align: center;
+            margin: 20px auto;
+        }
+        
+        .supplier-info h2 {
+            margin-bottom: 8px;
+        }
+        
+        .badge {
+            background-color: #e67e22;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .rating {
+            color: gold;
+        }
+        
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .dark-toggle {
+            cursor: pointer;
+            background: #222;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div>
+            <a href="index.html">🏠 Home</a>
+            <a href="order.html">🛒 Cart (<span id="cart-count">0</span>)</a>
+        </div>
+        <div class="top-right">
+            <button onclick="contactSupplier()">📞 Contact Supplier</button>
+            <div class="dark-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</div>
+        </div>
+    </div>
+
+    <div class="supplier-info">
+        <h2>FastGas Delivery <span class="badge">✔ Verified</span></h2>
+        <div class="rating">⭐⭐⭐⭐ (4.8)</div>
+        <p>Delivery in: 30–60 minutes</p>
+    </div>
+
+    <div class="product-container">
+        <div class="product-card">
+            <img src="images/gas-cylinder.png" alt="Gas Cylinder">
+            <h3>Domestic LPG Cylinder</h3>
+            <p>₹950/unit</p>
+            Qty: <input type="number" class="qty-input" id="qty-lpg" value="1" min="1" />
+            <button class="add-btn" onclick="addToCart('Domestic LPG Cylinder', 950, 'images/gas-cylinder.png', 'FastGas Delivery', 'qty-lpg')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="images/regulator.png" alt="Regulator">
+            <h3>Gas Regulator</h3>
+            <p>₹300/unit</p>
+            Qty: <input type="number" class="qty-input" id="qty-regulator" value="1" min="1" />
+            <button class="add-btn" onclick="addToCart('Gas Regulator', 300, 'images/regulator.png', 'FastGas Delivery', 'qty-regulator')">Add to Cart</button>
+        </div>
+
+        <div class="product-card">
+            <img src="images/pipe.png" alt="Pipe">
+            <h3>Gas Pipe</h3>
+            <p>₹150/meter</p>
+            Qty: <input type="number" class="qty-input" id="qty-pipe" value="1" min="1" />
+            <button class="add-btn" onclick="addToCart('Gas Pipe', 150, 'images/pipe.png', 'FastGas Delivery', 'qty-pipe')">Add to Cart</button>
+        </div>
+    </div>
+
+    <script>
+        function addToCart(name, price, img, supplier, qtyId) {
+            const qty = parseInt(document.getElementById(qtyId).value);
+            if (!qty || qty <= 0) {
+                alert("Please enter a valid quantity.");
+                return;
+            }
+
+            const item = {
+                name,
+                price,
+                img,
+                quantity: qty,
+                supplier
+            };
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            if (cart.length > 0 && cart[0].supplier !== supplier) {
+                alert("You can only order from one supplier at a time.");
+                return;
+            }
+
+            const existing = cart.find(i => i.name === name);
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push(item);
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCartCount();
+            alert("Item added to cart!");
+        }
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let count = cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById("cart-count").textContent = count;
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function contactSupplier() {
+            alert("Contact FastGas Delivery at: +91-9876543210");
+        }
+
+        window.onload = updateCartCount;
+    </script>
+</body>
+
+</html>

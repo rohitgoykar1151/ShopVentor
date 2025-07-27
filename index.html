@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopVentor | सप्लाईसेतु - Supplier Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #fff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      background-color: #f0f0f0;
+      text-align: right;
+      padding: 8px 20px;
+      font-size: 14px;
+    }
+
+    .topbar a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .topbar select {
+      margin-left: 10px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    nav.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 30px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(to right, #d4fc79, #96e6a1);
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 18px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #333;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      background-color: #555;
+    }
+
+    .suppliers {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .supplier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .supplier-card {
+      background-color: #fafafa;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .supplier-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .supplier-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .supplier-card h3 {
+      font-size: 18px;
+      margin: 10px 0 5px;
+    }
+
+    .verified {
+      color: green;
+      font-size: 14px;
+    }
+
+    .supplier-card a {
+      display: inline-block;
+      margin-top: 8px;
+      color: #4CAF50;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    section#orderSection {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    form#orderForm {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+
+    form input,
+    form button {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    form button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #45a049;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    /* Dark Mode */
+    .dark-mode {
+      background-color: #121212;
+      color: #f2f2f2;
+    }
+
+    .dark-mode nav,
+    .dark-mode footer,
+    .dark-mode .topbar {
+      background-color: #1f1f1f;
+      color: white;
+    }
+
+    .dark-mode .supplier-card {
+      background-color: #2c2c2c;
+      color: white;
+    }
+
+    .dark-mode .cta-btn {
+      background-color: #f2f2f2;
+      color: #111;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .supplier-card img {
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Topbar -->
+  <div class="topbar">
+    <a href="admin.html"><i class="fas fa-cogs"></i> Admin Panel</a>
+    <select id="langSelect">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+    </select>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">🛍 ShopVentor |  सप्लाईसेतु</div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="order.html"><i class="fas fa-box"></i> Orders</a></li>
+      <li><a href="#" id="darkModeToggle">🌓</a></li>
+      <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart (<span id="cartCount">0</span>)</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1>Your Trusted Supply Partner</h1>
+    <p>Find verified vendors for fresh produce, gas, dairy, and spices.</p>
+    <a href="#suppliers" class="cta-btn">Browse Suppliers</a>
+  </header>
+
+  <!-- Suppliers -->
+  <section class="suppliers" id="suppliers">
+    <h2>Featured Suppliers</h2>
+    <hr>
+    <div class="supplier-grid">
+      <div class="supplier-card">
+        <img src="images/freshfarm.jpg" alt="Fresh Farm Veggies">
+        <h3>Fresh Farm Veggies <span class="verified">✔ Verified</span></h3>
+        <a href="freshfarm.html">View Items</a>
+      </div>
+      <div class="supplier-card">
+        <img src="images/masalaking.jpg" alt="Masala King">
+        <h3>Masala King <span class="verified">✔ Verified</span></h3>
+        <a href="masalaking.html">View Items</a>
+      </div>
+      <div class="supplier-card">
+        <img src="images/fastgas.jpg" alt="FastGas Delivery">
+        <h3>FastGas Delivery <span class="verified">✔ Verified</span></h3>
+        <a href="fastgas.html">View Items</a>
+      </div>
+      <div class="supplier-card">
+        <img src="images/dairybasket.jpg" alt="Dairy Basket">
+        <h3>Dairy Basket <span class="verified">✔ Verified</span></h3>
+        <a href="dairy.html">View Items</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Order -->
+<section id="orderSection" style="background-color: beige; padding: 40px 20px; text-align: center;">
+  <h2 style="margin-bottom: 20px;">Quick Order </h2>
+
+  <div style="
+    max-width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: left;
+  ">
+    <form id="orderForm" style="display: flex; flex-direction: column; gap: 20px;">
+
+      <div>
+        <label for="vendorInput" style="display: block; font-weight: 600; margin-bottom: 5px;">Your Name</label>
+        <input type="text" name="vendor" id="vendorInput" placeholder="Enter your name" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;" />
+      </div>
+
+      <div>
+        <label for="itemInput" style="display: block; font-weight: 600; margin-bottom: 5px;">Item Name</label>
+        <input type="text" name="item" id="itemInput" placeholder="Enter item name" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;" />
+      </div>
+
+      <div>
+        <label for="quantityInput" style="display: block; font-weight: 600; margin-bottom: 5px;">Quantity</label>
+        <input type="number" name="quantity" id="quantityInput" placeholder="Enter quantity" required min="1" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;" />
+      </div>
+
+      <div style="text-align: center;">
+        <button type="button" id="voiceAll" title="Speak Vendor, Item, Quantity" class="mic-button" style="
+          background-color: #333;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+        ">
+          <span class="mic-icon">🎙️</span> Voice Input
+        </button>
+      </div>
+
+      <button type="submit" style="
+        background-color: #2e7d32;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+      ">
+        Place Order
+      </button>
+    </form>
+
+    <p id="orderStatus" style="text-align: center; margin-top: 15px; color: green; font-weight: 600;"></p>
+  </div>
+</section>
+
+
+
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 ShopVentor | Made for local vendors ❤</p>
+  </footer>
+
+  <script>
+  
+  // Dark Mode Toggle
+
+  const orderForm = document.getElementById("orderForm");
+  const orderStatus = document.getElementById("orderStatus");
+
+  orderForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    orderStatus.textContent = "✅ Order Placed Successfully!";
+    orderForm.reset();
+  });
+
+  const voiceBtn = document.getElementById("voiceAll");
+  const micIcon = voiceBtn.querySelector(".mic-icon");
+
+  if ('webkitSpeechRecognition' in window) {
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-IN';
+
+    voiceBtn.addEventListener("click", () => {
+      recognition.start();
+      voiceBtn.classList.add("mic-active");
+      voiceBtn.textContent = ""; // Clear text
+      voiceBtn.appendChild(micIcon); // Re-append mic icon
+      voiceBtn.append(" Listening...");
+    });
+
+    recognition.onresult = (event) => {
+      const speech = event.results[0][0].transcript;
+      const parts = speech.split(" ");
+
+      if (parts.length >= 3) {
+        document.getElementById("vendorInput").value = parts[0];
+        document.getElementById("itemInput").value = parts[1];
+        document.getElementById("quantityInput").value = parts[2];
+        orderStatus.textContent = "🎉 Fields filled using voice!";
+      } else {
+        alert("Please say Vendor, Item, and Quantity (3 words).");
+      }
+      resetMicButton();
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech error:", event.error);
+      alert("Voice error: " + event.error);
+      resetMicButton();
+    };
+
+    recognition.onend = () => {
+      resetMicButton();
+    };
+
+    function resetMicButton() {
+      voiceBtn.classList.remove("mic-active");
+      voiceBtn.textContent = ""; // Reset text
+      voiceBtn.appendChild(micIcon); // Re-add icon
+      voiceBtn.append(" Voice Input");
+    }
+  } else {
+    voiceBtn.disabled = true;
+    voiceBtn.textContent = "🎤 Voice not supported";
+  }
+
+</script>
+
+</body>
+
+</html>

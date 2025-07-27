@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<button onclick="logout()" style="float:right; margin-bottom: 1rem;">Logout</button>
+
+<script>
+    function logout() {
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = 'admin-login.html';
+    }
+</script>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Manage Suppliers</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 2rem;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        form,
+        .supplier-list {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            padding: 0.6rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        
+        .supplier-card {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        button.edit,
+        button.delete {
+            width: auto;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<script>
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+        window.location.href = 'admin-login.html';
+    }
+</script>
+
+<body>
+    <h1>Admin - Add New Supplier</h1>
+    <form id="supplierForm">
+        <input type="text" id="name" placeholder="Supplier Name" required />
+        <input type="text" id="contact" placeholder="Contact Info" required />
+        <select id="type" required>
+      <option value="">Select Supplier Type</option>
+      <option value="vegetables">Vegetables</option>
+      <option value="spices">Spices</option>
+      <option value="gas">Gas</option>
+      <option value="dairy">Dairy</option>
+    </select>
+        <input type="text" id="delivery" placeholder="Delivery Estimate (e.g. 30 mins)" required />
+        <input type="number" id="rating" min="1" max="5" placeholder="Star Rating (1-5)" required />
+        <label><input type="checkbox" id="verified" /> Verified Supplier</label>
+        <textarea id="products" placeholder='Enter product names separated by commas, e.g. "Milk, Cheese, Yogurt"' required></textarea>
+        <button type="submit">Add Supplier</button>
+    </form>
+
+    <h1>Existing Suppliers</h1>
+    <div class="supplier-list" id="supplierList"></div>
+
+    <script>
+        const form = document.getElementById('supplierForm');
+        const listContainer = document.getElementById('supplierList');
+
+        const loadSuppliers = () => {
+            const suppliers = JSON.parse(localStorage.getItem('suppliersList')) || [];
+            listContainer.innerHTML = '';
+            suppliers.forEach((sup, idx) => {
+                const div = document.createElement('div');
+                div.className = 'supplier-card';
+                div.innerHTML = `
+          <strong>${sup.name}</strong> (${sup.type}) <br />
+          Contact: ${sup.contact}<br />
+          Delivery: ${sup.delivery} <br />
+          Rating: ${sup.rating} ⭐ ${sup.verified ? '<span style="color: green">✔ Verified</span>' : ''}<br />
+          Products: ${sup.products.join(', ')}
+          <div class="actions">
+            <button class="edit" onclick="editSupplier(${idx})">Edit</button>
+            <button class="delete" onclick="deleteSupplier(${idx})">Delete</button>
+          </div>
+        `;
+                listContainer.appendChild(div);
+            });
+        };
+
+        const saveSuppliers = (suppliers) => {
+            localStorage.setItem('suppliersList', JSON.stringify(suppliers));
+            loadSuppliers();
+        };
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const supplier = {
+                name: document.getElementById('name').value,
+                contact: document.getElementById('contact').value,
+                type: document.getElementById('type').value,
+                delivery: document.getElementById('delivery').value,
+                rating: parseInt(document.getElementById('rating').value),
+                verified: document.getElementById('verified').checked,
+                products: document.getElementById('products').value.split(',').map(p => p.trim())
+            };
+            const suppliers = JSON.parse(localStorage.getItem('suppliersList')) || [];
+            suppliers.push(supplier);
+            saveSuppliers(suppliers);
+            form.reset();
+        });
+
+        const deleteSupplier = (index) => {
+            const suppliers = JSON.parse(localStorage.getItem('suppliersList')) || [];
+            suppliers.splice(index, 1);
+            saveSuppliers(suppliers);
+        };
+
+        const editSupplier = (index) => {
+            const suppliers = JSON.parse(localStorage.getItem('suppliersList')) || [];
+            const sup = suppliers[index];
+            document.getElementById('name').value = sup.name;
+            document.getElementById('contact').value = sup.contact;
+            document.getElementById('type').value = sup.type;
+            document.getElementById('delivery').value = sup.delivery;
+            document.getElementById('rating').value = sup.rating;
+            document.getElementById('verified').checked = sup.verified;
+            document.getElementById('products').value = sup.products.join(', ');
+            suppliers.splice(index, 1);
+            saveSuppliers(suppliers);
+        };
+
+        // Load on page load
+        loadSuppliers();
+    </script>
+</body>
+
+</html>
